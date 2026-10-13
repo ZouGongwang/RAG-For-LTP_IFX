@@ -5,8 +5,8 @@ import ollama
 
 # ---- CONFIGURATION ----
 CHROMA_DB_PATH = "chroma_db"
-RETRIEVE_K = 5           # chunks fed to the LLM (keep broader context)
-DISPLAY_SOURCES_K = 2    # only show top 2 distinct sources to user
+RETRIEVE_K = 5   
+DISPLAY_SOURCES_K = 2    
 LLM_MODEL = "deepseek-r1:8b"
 
 # ---- INITIALIZE ----
@@ -99,7 +99,7 @@ def main():
     print("="*60)
     
     while True:
-        question = input("\n💬 Your question: ").strip()
+        question = input("\nYour question: ").strip()
         
         if question.lower() in ['quit', 'exit']:
             print("Goodbye!")
@@ -108,11 +108,11 @@ def main():
         if not question:
             continue
         
-        print("\n🔍 Searching documents...")
+        print("\nSearching documents...")
         answer, sources = query_documents(question)
         
-        print(f"\n🤖 Answer:\n{answer}")
-        print(f"\n📚 Sources:")
+        print(f"\nAnswer:\n{answer}")
+        print(f"\nSources:")
         for source in sources:
             print(f"  - {source}")
 
