@@ -80,24 +80,30 @@ class ConfluenceDataCenter:
 
     def pages(self, space_key: str) -> Iterator[Page]:
         start = 0
+        seen: set[str] = set()
+        cql = f'space="{space_key}" and type=page order by created asc'
         while True:
             data = self.h.get(
-                "/rest/api/content",
-                {"spaceKey": space_key, "type": "page", "status": "current",
-                 "start": start, "limit": _PAGE_SIZE, "expand": "version,ancestors"},
+                "/rest/api/content/search",
+                {"cql": cql, "start": start, "limit": _PAGE_SIZE,
+                 "expand": "version,ancestors"},
             )
             results = data.get("results", [])
+            if not results:
+                return
             for p in results:
+                pid = str(p["id"])
+                if pid in seen:          # guard against duplicates between batches
+                    continue
+                seen.add(pid)
                 yield Page(
-                    id=str(p["id"]),
+                    id=pid,
                     title=p.get("title", ""),
                     version=int(p.get("version", {}).get("number", 0)),
                     when=p.get("version", {}).get("when", ""),
                     ancestors=[a.get("title", "") for a in p.get("ancestors", [])],
                     url=self.h.abs(p.get("_links", {}).get("webui", f"/pages/viewpage.action?pageId={p['id']}")),
                 )
-            if len(results) < _PAGE_SIZE:
-                return
             start += len(results)
 
     def body(self, page_id: str) -> str:

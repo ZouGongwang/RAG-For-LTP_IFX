@@ -20,8 +20,8 @@ sources:
     spaces: [BEBSP]                  # space keys
     include_attachments: true
     max_attachment_mb: 50
-    verify_ssl: false
-    page_limit: 20            # set e.g. 20 for a quick trial run
+    verify_ssl: true
+    page_limit: 50            # set e.g. 20 for a quick trial run
   confluence_export:
     enabled: false
     path: data/confluence_export   # unzipped HTML or Markdown space export
