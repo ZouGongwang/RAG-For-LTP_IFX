@@ -1,0 +1,101 @@
+# BSP/IFX RAG configuration.
+# Any value can be overridden with an environment variable: RAG_<SECTION>__<KEY>,
+# e.g. RAG_LLM__OLLAMA__MODEL=llama3.2 or RAG_LLM__PROVIDER=mcp.
+# Secrets (tokens, keys) go in .env, never here.
+
+device: auto            # auto | cpu | mps (Apple GPU) | cuda (NVIDIA)
+log_level: INFO
+
+paths:
+  data_dir: data                # index, sync state, caption cache
+  models_dir: data/models       # Hugging Face / Docling model cache (copyable to offline machines)
+
+sources:
+  local:
+    enabled: true
+    path: documents
+  confluence_api:
+    enabled: false
+    deployment: datacenter      # datacenter (self-hosted) | cloud (*.atlassian.net)
+    spaces: []                  # space keys, e.g. [BSP, IFX]
+    include_attachments: true
+    max_attachment_mb: 50
+    verify_ssl: true
+    page_limit: null            # set e.g. 20 for a quick trial run
+  confluence_export:
+    enabled: false
+    path: data/confluence_export   # unzipped HTML or Markdown space export
+    space: ""
+
+parsing:
+  backend: docling              # docling (layout, tables, OCR) | simple (lightweight fallback)
+  ocr: true
+  table_structure: true
+  describe_images: true         # caption figures/diagrams with the vision model
+  describe_low_text_pages: true # caption PDF pages that are mostly graphics
+  low_text_threshold: 100       # characters per page
+  min_image_px: 120             # ignore icons/logos smaller than this
+  image_scale: 2.0
+  docling_artifacts_path: null  # folder with pre-downloaded Docling models (offline use)
+
+chunking:
+  max_tokens: 400
+  overlap_ratio: 0.15
+  min_tokens: 25
+
+embedding:
+  model: BAAI/bge-small-en-v1.5
+  query_prefix: "Represent this sentence for searching relevant passages: "
+  batch_size: 32
+
+vectorstore:
+  collection: bsp_docs
+
+retrieval:
+  dense_k: 20
+  bm25_k: 20
+  top_k: 5
+  rrf_k: 60
+  rerank:
+    enabled: false
+    model: cross-encoder/ms-marco-MiniLM-L-6-v2
+    candidates: 20
+
+prompt:
+  template: answer.md
+  max_context_chars: 12000
+  display_sources: 3
+
+llm:
+  provider: ollama              # ollama | openai_compat | mcp
+  ollama:
+    model: deepseek-r1:8b
+    host: http://localhost:11434
+    temperature: 0.1
+    num_ctx: 8192
+  openai_compat:                # if IT exposes an OpenAI/Azure-style endpoint
+    base_url: ""
+    model: ""
+    api_key_env: LLM_API_KEY
+  mcp:                          # if IT exposes the cloud LLM as an MCP tool; run `rag mcp-tools`
+    transport: streamable_http  # streamable_http | sse | stdio
+    url: ""
+    auth_token_env: MCP_AUTH_TOKEN
+    tool_name: generate
+    argument_style: prompt      # prompt (single string) | messages (chat list)
+    prompt_arg: prompt
+    system_arg: null
+    messages_arg: messages
+    extra_args: {}
+
+vision:
+  enabled: true
+  provider: ollama
+  ollama:
+    model: llava:7b
+    host: http://localhost:11434
+    timeout_s: 300
+
+api:
+  host: 127.0.0.1
+  port: 8000

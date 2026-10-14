@@ -1,0 +1,19 @@
+from __future__ import annotations
+
+from typing import Any, Iterator, Protocol
+
+from rag.models import Chunk, RetrievedChunk
+
+
+class VectorStore(Protocol):
+    def upsert(self, chunks: list[Chunk], embeddings: list[list[float]]) -> None: ...
+
+    def delete_doc(self, doc_id: str) -> None: ...
+
+    def query(self, embedding: list[float], k: int, where: dict[str, Any] | None = None) -> list[RetrievedChunk]: ...
+
+    def iter_all(self, where: dict[str, Any] | None = None) -> Iterator[RetrievedChunk]: ...
+
+    def count(self) -> int: ...
+
+    def reset(self) -> None: ...

@@ -1,0 +1,21 @@
+# Secrets
+.env
+
+# Generated data: index, sync state, model caches, exports
+data/
+chroma_db/
+documents/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

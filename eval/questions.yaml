@@ -1,0 +1,13 @@
+# Golden questions for regression checks: `python -m rag eval`
+# expect_source: substring that should appear in the title/doc_id of a retrieved passage.
+# expect_answer: optional substrings the answer should contain (case-insensitive).
+# Replace these examples with real questions from the team.
+
+- question: How is BE OPC capacity planning defined for VRFC?
+  expect_source: BE OPC Capacity Planning
+- question: What are the milestones on the MiS GaN milestone chart?
+  expect_source: MiS GaN Milestone Chart
+- question: What does the VRFC2506 schedule contain?
+  expect_source: VRFC2506 Schedule
+- question: How should scenario enquiries be handled?
+  expect_source: Scenario_Enquiry_FAQ

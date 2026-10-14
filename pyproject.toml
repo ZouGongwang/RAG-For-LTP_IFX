@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bsp-rag"
+version = "0.2.0"
+description = "RAG over BSP/IFX Confluence spaces, PDFs, slides and images"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.6",
+    "pydantic-settings>=2.3",
+    "pyyaml",
+    "python-dotenv",
+    "typer>=0.12",
+    "sentence-transformers>=3.0",
+    "chromadb>=0.5",
+    "rank-bm25",
+    "ollama>=0.4",
+    "beautifulsoup4",
+    "markdownify>=0.13",
+    "requests",
+    "pillow",
+    "pypdfium2",
+    "python-pptx",
+    "python-docx",
+    "fastapi",
+    "uvicorn",
+]
+
+[project.optional-dependencies]
+docling = ["docling>=2.20"]
+cloud = ["mcp>=1.6", "openai>=1.40"]
+dev = ["pytest", "httpx"]
+all = ["bsp-rag[docling,cloud,dev]"]
+
+[project.scripts]
+rag = "rag.api.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["rag*"]
+
+[tool.setuptools.package-data]
+rag = ["prompt/templates/*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: downloads models or needs a running Ollama"]
