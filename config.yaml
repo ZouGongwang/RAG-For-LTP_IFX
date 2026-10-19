@@ -3,7 +3,7 @@
 # e.g. RAG_LLM__OLLAMA__MODEL=llama3.2 or RAG_LLM__PROVIDER=mcp.
 # Secrets (tokens, keys) go in .env, never here.
 
-device: auto            # auto | cpu | mps (Apple GPU) | cuda (NVIDIA)
+device: auto            
 log_level: INFO
 
 paths:
@@ -19,9 +19,9 @@ sources:
     deployment: datacenter      # datacenter (self-hosted) | cloud (*.atlassian.net)
     spaces: [BEBSP]                  # space keys
     include_attachments: true
-    max_attachment_mb: 50
+    max_attachment_mb: 200
     verify_ssl: true
-    page_limit: 50            # set e.g. 20 for a quick trial run
+    page_limit: 50
   confluence_export:
     enabled: false
     path: data/confluence_export   # unzipped HTML or Markdown space export
@@ -94,7 +94,7 @@ vision:
   ollama:
     model: llava:7b
     host: http://localhost:11434
-    timeout_s: 300
+    timeout_s: 900
 
 api:
   host: 127.0.0.1
