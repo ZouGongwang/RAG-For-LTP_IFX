@@ -74,10 +74,10 @@ llm:
     temperature: 0.1
     num_ctx: 8192
   openai_compat:                # company LiteLLM gateway (OpenAI-compatible)
-    base_url: "https://litellm.icp.infincon.com/v1"
-    model: "gpt-5"              # or claude-sonnet-4.6 — must match gateway model id
+    base_url: "https://litellm.icp.infineon.com/v1"   # LITELLM_API_BASE from the IT doc + /v1
+    model: "gpt-5"              # or claude-sonnet-4.6 — must match the gateway model id
     api_key_env: LLM_API_KEY
-    temperature: 0.1
+    temperature: null           # null = model default; dropped automatically if a model rejects it
     timeout_s: 120
   mcp:                          # if IT exposes the cloud LLM as an MCP tool; run `rag mcp-tools`
     transport: streamable_http  # streamable_http | sse | stdio
@@ -97,10 +97,8 @@ vision:
     model: llava:7b
     host: http://localhost:11434
     timeout_s: 300
-  openai_compat:
-    base_url: "https://litellm.icp.infincon.com/v1"
-    model: "gpt-5"              # or claude-sonnet-4.6
-    api_key_env: LLM_API_KEY
+  openai_compat:                # empty fields reuse llm.openai_compat (same gateway, key, model)
+    model: ""                   # set e.g. claude-sonnet-4.6 to caption with a different model
     timeout_s: 120
 
 api:

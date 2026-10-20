@@ -193,7 +193,15 @@ def doctor():
             typer.echo(f"[ OK ] {label}" + (f": {detail}" if detail else ""))
         except Exception as exc:
             ok = False
-            typer.echo(f"[FAIL] {label}: {type(exc).__name__}: {exc}")
+            root = exc
+            while root.__cause__ is not None:
+                root = root.__cause__
+            cause = f" (cause: {type(root).__name__}: {root})" if root is not exc else ""
+            typer.echo(f"[FAIL] {label}: {type(exc).__name__}: {exc}{cause}")
+            if "nodename nor servname" in str(root) or "Name or service not known" in str(root):
+                typer.echo("       Host not found: connect to the company network/VPN, or check base_url.")
+            elif "CERTIFICATE_VERIFY_FAILED" in str(root):
+                typer.echo("       TLS not trusted: set SSL_CERT_FILE in .env to the company ca-bundle.crt.")
 
     from rag.pipeline.components import Components
 

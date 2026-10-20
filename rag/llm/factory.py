@@ -20,7 +20,7 @@ def build_llm(cfg: LLMConfig) -> LLMClient:
     raise ValueError(f"Unknown LLM provider: {cfg.provider}")
 
 
-def build_vision(cfg: VisionConfig) -> VisionClient | None:
+def build_vision(cfg: VisionConfig, llm_cfg: LLMConfig | None = None) -> VisionClient | None:
     if not cfg.enabled:
         return None
     if cfg.provider == "ollama":
@@ -30,7 +30,15 @@ def build_vision(cfg: VisionConfig) -> VisionClient | None:
     if cfg.provider == "openai_compat":
         from rag.llm.openai_compat import OpenAICompatVision
 
-        return OpenAICompatVision(cfg.openai_compat)
+        own = cfg.openai_compat
+        if llm_cfg is not None:
+            base = llm_cfg.openai_compat
+            own = own.model_copy(update={
+                "base_url": own.base_url or base.base_url,
+                "model": own.model or base.model,
+                "api_key_env": own.api_key_env or base.api_key_env,
+            })
+        return OpenAICompatVision(own)
     if cfg.provider == "mcp":
         from rag.llm.mcp_client import MCPVision
 

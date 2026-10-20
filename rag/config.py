@@ -122,10 +122,13 @@ class OllamaConfig(BaseModel):
 
 
 class OpenAICompatConfig(BaseModel):
+    """Empty fields under ``vision.openai_compat`` inherit from ``llm.openai_compat``."""
+
     base_url: str = ""
     model: str = ""
-    api_key_env: str = "LLM_API_KEY"
-    temperature: float = 0.1
+    api_key_env: str = ""
+    # None = don't send it (some models, e.g. GPT-5 reasoning models, reject non-default values).
+    temperature: float | None = None
     timeout_s: float = 120
 
 

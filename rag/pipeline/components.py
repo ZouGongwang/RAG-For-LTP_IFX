@@ -42,7 +42,7 @@ class Components:
     def vision(self):
         from rag.llm import build_vision
 
-        return build_vision(self.settings.vision)
+        return build_vision(self.settings.vision, self.settings.llm)
 
     @cached_property
     def describer(self):

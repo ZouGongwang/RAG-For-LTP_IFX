@@ -53,7 +53,11 @@ def make_components(tmp_path: Path):
     def _make(docs_dir: Path, **overrides) -> Components:
         settings = Settings(
             paths={"data_dir": str(tmp_path / "data"), "models_dir": None},
-            sources={"local": {"enabled": True, "path": str(docs_dir)}},
+            sources={
+                "local": {"enabled": True, "path": str(docs_dir)},
+                "confluence_api": {"enabled": False},
+                "confluence_export": {"enabled": False},
+            },
             embedding={"model": FakeEmbedder.name},
             vision={"enabled": False},
             parsing={"backend": "simple", "describe_images": False, "describe_low_text_pages": False},
