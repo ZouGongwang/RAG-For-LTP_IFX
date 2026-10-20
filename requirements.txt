@@ -1,3 +1,0 @@
-# Full install (Docling parsing, MCP/OpenAI clients, tests).
-# Lightweight install without Docling (then set parsing.backend: simple):  pip install -e .[cloud,dev]
--e .[all]

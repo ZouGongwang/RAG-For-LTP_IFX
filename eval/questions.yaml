@@ -1,8 +1,3 @@
-# Golden questions for regression checks: `python -m rag eval`
-# expect_source: substring that should appear in the title/doc_id of a retrieved passage.
-# expect_answer: optional substrings the answer should contain (case-insensitive).
-# Replace these examples with real questions from the team.
-
 - question: 
   expect_source: 
 - question: 
