@@ -67,16 +67,18 @@ prompt:
   display_sources: 3
 
 llm:
-  provider: ollama              # ollama | openai_compat | mcp
-  ollama:
+  provider: openai_compat       # ollama | openai_compat | mcp
+  ollama:                       # local fallback: set provider: ollama
     model: deepseek-r1:8b
     host: http://localhost:11434
     temperature: 0.1
     num_ctx: 8192
-  openai_compat:                # if IT exposes an OpenAI/Azure-style endpoint
-    base_url: ""
-    model: ""
+  openai_compat:                # company LiteLLM gateway (OpenAI-compatible)
+    base_url: "https://litellm.icp.infincon.com/v1"
+    model: "gpt-5"              # or claude-sonnet-4.6 — must match gateway model id
     api_key_env: LLM_API_KEY
+    temperature: 0.1
+    timeout_s: 120
   mcp:                          # if IT exposes the cloud LLM as an MCP tool; run `rag mcp-tools`
     transport: streamable_http  # streamable_http | sse | stdio
     url: ""
@@ -90,11 +92,16 @@ llm:
 
 vision:
   enabled: true
-  provider: ollama
-  ollama:
+  provider: openai_compat       # same gateway; uses multimodal chat (image_url)
+  ollama:                       # local fallback: set provider: ollama
     model: llava:7b
     host: http://localhost:11434
-    timeout_s: 900
+    timeout_s: 300
+  openai_compat:
+    base_url: "https://litellm.icp.infincon.com/v1"
+    model: "gpt-5"              # or claude-sonnet-4.6
+    api_key_env: LLM_API_KEY
+    timeout_s: 120
 
 api:
   host: 127.0.0.1

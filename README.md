@@ -22,9 +22,8 @@ macOS: `./scripts/setup.sh` | Windows (PowerShell): `.\scripts\setup.ps1`
 Add `--lite` / `-Lite` to skip Docling, then set `parsing.backend: simple`.
 
 ```
-ollama pull deepseek-r1:8b
-ollama pull llava:7b          # image / diagram descriptions
-python -m rag doctor          # checks models and connections
+# Put LLM_API_KEY (and SSL_CERT_FILE if needed) in .env — see .env.example
+python -m rag doctor          # checks LiteLLM chat + vision, embeddings, Confluence
 python -m rag ingest          # incremental; --force re-parses, --rebuild starts over
 python -m rag ask             # interactive; or: python -m rag ask "question" --show-context
 python -m rag serve           # http://127.0.0.1:8000/docs  (POST /query, POST /ingest)
@@ -32,7 +31,7 @@ python -m rag eval            # golden questions in eval/questions.yaml
 ```
 
 Config lives in `config.yaml`; secrets in `.env` (copy `.env.example`). Any setting can be
-overridden by env var, e.g. `RAG_LLM__OLLAMA__MODEL=llama3.2`.
+overridden by env var, e.g. `RAG_LLM__OPENAI_COMPAT__MODEL=claude-sonnet-4.6`.
 
 ## Confluence
 
@@ -41,11 +40,19 @@ API (live): set `sources.confluence_api.enabled: true`, `deployment` and `spaces
 Try `page_limit: 20` first. Export (offline): unzip a space HTML export into
 `data/confluence_export` and enable `sources.confluence_export`.
 
-## Switching to the company cloud LLM
+## Company LiteLLM gateway (default)
 
-* MCP: fill in `llm.mcp` (url, auth token in `.env`), run `python -m rag mcp-tools` to see the
-  tool's argument names, map them (`tool_name`, `prompt_arg`, ...), then `llm.provider: mcp`.
-* OpenAI/Azure-style endpoint: fill in `llm.openai_compat`, then `llm.provider: openai_compat`.
+Chat answers and image/diagram captions both use the **OpenAI-compatible** LiteLLM endpoint
+(`llm.provider` / `vision.provider: openai_compat`).
+
+1. Set `LLM_API_KEY` in `.env` (and `SSL_CERT_FILE` / `REQUESTS_CA_BUNDLE` to the corporate CA if TLS fails).
+2. Confirm `base_url` ends with `/v1` and `model` matches a gateway id (e.g. `gpt-5`, `claude-sonnet-4.6`).
+3. `python -m rag doctor` — both **LLM** and **Vision model** checks should pass.
+4. Optional: swap models via env, e.g. `RAG_VISION__OPENAI_COMPAT__MODEL=claude-sonnet-4.6`.
+
+Embeddings stay local (`BAAI/bge-small-en-v1.5`) until you add a cloud embedder for
+`qwen3-embedding-8b`. Local Ollama remains available: set `llm.provider` / `vision.provider`
+back to `ollama`. MCP: fill in `llm.mcp`, run `python -m rag mcp-tools`, then `llm.provider: mcp`.
 
 ## Windows test checklist
 
