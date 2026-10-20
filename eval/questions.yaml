@@ -1,8 +1,8 @@
-- question: 
+- question: Whats the standard flow on existing pkcs for pkc assignment?
   expect_source: 
-- question: 
+- question: whats the objective OPBD Review for Milestone Tracking Analysis?
   expect_source: 
-- question: 
+- question: Can you tell me who's the current Power IC for Test Portfoilio and what is his contact?
   expect_source: 
-- question: 
+- question: I have last minute demand request even though the monthly delta has closed, what is the protocol?
   expect_source: 
