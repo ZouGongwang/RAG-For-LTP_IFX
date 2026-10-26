@@ -1,6 +1,6 @@
 - question: Whats the standard flow on existing pkcs for pkc assignment?
   expect_source: 
-- question: whats the objective OPBD Review for Milestone Tracking Analysis?
+- question: whats the objective of OPBD Review for Milestone Tracking Analysis?
   expect_source: 
 - question: Can you tell me who's the current Power IC for Test Portfoilio and what is his contact?
   expect_source: 
