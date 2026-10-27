@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import json
 import threading
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from rag import __version__
@@ -23,7 +24,7 @@ _WIDGET = Path(__file__).resolve().parent / "static" / "index.html"
 
 @app.get("/")
 def home() -> FileResponse:
-    return FileResponse(_WIDGET)
+    return FileResponse(_WIDGET, headers={"Cache-Control": "no-cache"})
 
 
 @lru_cache(maxsize=1)
@@ -117,6 +118,28 @@ def query(req: QueryRequest) -> QueryResponse:
         sources=_out(result.sources, result.context_chunks),
         context=_out(result.context_chunks, result.context_chunks),
     )
+
+
+@app.post("/query/stream")
+def query_stream(req: QueryRequest) -> StreamingResponse:
+    """Same streamed answer as ``rag ask``, then the cited sources."""
+    pipeline = QueryPipeline(components())
+    filters = {"space": req.space, "source": req.source}
+
+    def events():
+        try:
+            stream, used = pipeline.ask_stream(req.question, filters=filters, top_k=req.top_k)
+            parts: list[str] = []
+            for piece in stream:
+                parts.append(piece)
+                yield json.dumps({"type": "delta", "text": piece}) + "\n"
+            answer = "".join(parts)
+            sources = [item.model_dump() for item in _out(pipeline.select_sources(answer, used), used)]
+            yield json.dumps({"type": "done", "answer": answer, "sources": sources}) + "\n"
+        except Exception as exc:
+            yield json.dumps({"type": "error", "detail": f"{type(exc).__name__}: {exc}"}) + "\n"
+
+    return StreamingResponse(events(), media_type="application/x-ndjson")
 
 
 @app.post("/ingest", status_code=202)
