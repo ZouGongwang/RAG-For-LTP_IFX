@@ -4,4 +4,4 @@ Context passages:
 
 Question: {question}
 
-Answer (cite passages like [1]):
+Answer with ## category headings and one-sentence bullets under each. Cite passages like [1]:
