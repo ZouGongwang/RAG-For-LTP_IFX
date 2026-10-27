@@ -40,6 +40,21 @@ API (live): set `sources.confluence_api.enabled: true`, `deployment` and `spaces
 Try `page_limit: 20` first. Export (offline): unzip a space HTML export into
 `data/confluence_export` and enable `sources.confluence_export`.
 
+## Chat button on Confluence pages
+
+The same corner button can be loaded by the wiki. A Confluence admin pastes this into
+**General configuration → Custom HTML → At end of the BODY**, replacing the host with the
+HTTPS address of this API (`api.cors_origins` must include the wiki origin):
+
+```html
+<script src="https://YOUR-RAG-HOST/widget.js" data-space="BEBSP"></script>
+```
+
+`data-space` limits answers to that space. Omit it to search everything indexed.
+The wiki is HTTPS, so the API host must be HTTPS too. `http://127.0.0.1:8000` is blocked
+by the browser on a Confluence page. Until that host exists, use `python -m rag serve`
+and open `http://127.0.0.1:8000` on the laptop.
+
 ## Company LiteLLM gateway (default)
 
 Chat answers and image/diagram captions both use the **OpenAI-compatible** LiteLLM endpoint

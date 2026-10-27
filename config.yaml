@@ -104,3 +104,5 @@ vision:
 api:
   host: 127.0.0.1
   port: 8000
+  cors_origins:
+    - https://confluencewikiprod.intra.infineon.com

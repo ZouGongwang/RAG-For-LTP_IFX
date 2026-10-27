@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
@@ -19,12 +20,27 @@ from rag.pipeline import IngestPipeline, QueryPipeline
 from rag.pipeline.components import Components
 
 app = FastAPI(title="BSP/IFX RAG", version=__version__)
-_WIDGET = Path(__file__).resolve().parent / "static" / "index.html"
+_STATIC = Path(__file__).resolve().parent / "static"
+_NO_CACHE = {"Cache-Control": "no-cache"}
+
+_origins = [origin.rstrip("/") for origin in get_settings().api.cors_origins if origin]
+if _origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=_origins,
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["*"],
+    )
 
 
 @app.get("/")
 def home() -> FileResponse:
-    return FileResponse(_WIDGET, headers={"Cache-Control": "no-cache"})
+    return FileResponse(_STATIC / "index.html", headers=_NO_CACHE)
+
+
+@app.get("/widget.js")
+def widget_js() -> FileResponse:
+    return FileResponse(_STATIC / "widget.js", media_type="application/javascript", headers=_NO_CACHE)
 
 
 @lru_cache(maxsize=1)

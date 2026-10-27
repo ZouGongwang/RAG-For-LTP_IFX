@@ -168,6 +168,8 @@ class VisionConfig(BaseModel):
 class APIConfig(BaseModel):
     host: str = "127.0.0.1"
     port: int = 8000
+    # Browsers on these sites may call /query. Confluence is HTTPS, so the API must be HTTPS too.
+    cors_origins: list[str] = Field(default_factory=list)
 
 
 class Settings(BaseSettings):

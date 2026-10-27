@@ -8,10 +8,25 @@ from rag.pipeline import IngestPipeline
 
 def test_home_page_serves_chat_widget():
     client = TestClient(server.app)
-    resp = client.get("/")
-    assert resp.status_code == 200
-    assert 'id="bsp-launcher"' in resp.text
-    assert "/query/stream" in resp.text
+    page = client.get("/")
+    assert page.status_code == 200
+    assert 'src="/widget.js"' in page.text
+    script = client.get("/widget.js")
+    assert script.status_code == 200
+    assert "bsp-launcher" in script.text
+    assert "/query/stream" in script.text
+
+
+def test_confluence_origin_can_call_the_api():
+    resp = TestClient(server.app).options(
+        "/query/stream",
+        headers={
+            "Origin": "https://confluencewikiprod.intra.infineon.com",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert resp.headers.get("access-control-allow-origin") == "https://confluencewikiprod.intra.infineon.com"
 
 
 def test_query_endpoint(tmp_path, make_components, monkeypatch):
