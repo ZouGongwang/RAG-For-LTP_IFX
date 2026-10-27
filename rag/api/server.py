@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import threading
 from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from rag import __version__
@@ -16,6 +18,12 @@ from rag.pipeline import IngestPipeline, QueryPipeline
 from rag.pipeline.components import Components
 
 app = FastAPI(title="BSP/IFX RAG", version=__version__)
+_WIDGET = Path(__file__).resolve().parent / "static" / "index.html"
+
+
+@app.get("/")
+def home() -> FileResponse:
+    return FileResponse(_WIDGET)
 
 
 @lru_cache(maxsize=1)

@@ -42,7 +42,7 @@ rag = "rag.api.cli:main"
 include = ["rag*"]
 
 [tool.setuptools.package-data]
-rag = ["prompt/templates/*.md"]
+rag = ["prompt/templates/*.md", "api/static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

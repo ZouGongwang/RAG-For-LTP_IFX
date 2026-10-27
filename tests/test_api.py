@@ -4,6 +4,14 @@ from rag.api import server
 from rag.pipeline import IngestPipeline
 
 
+def test_home_page_serves_chat_widget():
+    client = TestClient(server.app)
+    resp = client.get("/")
+    assert resp.status_code == 200
+    assert 'id="bsp-launcher"' in resp.text
+    assert 'fetch("/query"' in resp.text
+
+
 def test_query_endpoint(tmp_path, make_components, monkeypatch):
     docs = tmp_path / "docs"
     docs.mkdir()

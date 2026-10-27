@@ -26,7 +26,7 @@ Add `--lite` / `-Lite` to skip Docling, then set `parsing.backend: simple`.
 python -m rag doctor          # checks LiteLLM chat + vision, embeddings, Confluence
 python -m rag ingest          # incremental; --force re-parses, --rebuild starts over
 python -m rag ask             # interactive; or: python -m rag ask "question" --show-context
-python -m rag serve           # http://127.0.0.1:8000/docs  (POST /query, POST /ingest)
+python -m rag serve           # http://127.0.0.1:8000  corner chat; /docs for the API
 python -m rag eval            # golden questions in eval/questions.yaml
 ```
 
