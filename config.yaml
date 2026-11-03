@@ -1,7 +1,5 @@
 # BSP/IFX RAG configuration.
 # Any value can be overridden with an environment variable: RAG_<SECTION>__<KEY>,
-# e.g. RAG_LLM__OLLAMA__MODEL=llama3.2 or RAG_LLM__PROVIDER=mcp.
-# Secrets (tokens, keys) go in .env, never here.
 
 device: auto            
 log_level: INFO
@@ -17,7 +15,7 @@ sources:
   confluence_api:
     enabled: true
     deployment: datacenter      # datacenter (self-hosted) | cloud (*.atlassian.net)
-    spaces: [BEBSP]                  # space keys
+    spaces: [BEBSP]             
     include_attachments: true
     max_attachment_mb: 200
     verify_ssl: true
@@ -68,7 +66,7 @@ prompt:
 
 llm:
   provider: openai_compat       # ollama | openai_compat | mcp
-  ollama:                       # local fallback: set provider: ollama
+  ollama:                       
     model: deepseek-r1:8b
     host: http://localhost:11434
     temperature: 0.1
@@ -84,7 +82,7 @@ llm:
     url: ""
     auth_token_env: MCP_AUTH_TOKEN
     tool_name: generate
-    argument_style: prompt      # prompt (single string) | messages (chat list)
+    argument_style: prompt      
     prompt_arg: prompt
     system_arg: null
     messages_arg: messages
