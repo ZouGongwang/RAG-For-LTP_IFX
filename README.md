@@ -16,6 +16,8 @@ rag/
   api/         CLI (typer) and HTTP API (FastAPI)
 ```
 
+How the pieces connect: [ARCHITECTURE.md](ARCHITECTURE.md).
+
 ## Setup
 
 macOS: `./scripts/setup.sh` | Windows (PowerShell): `.\scripts\setup.ps1`

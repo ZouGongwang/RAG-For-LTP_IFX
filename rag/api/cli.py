@@ -1,5 +1,7 @@
 """Command-line interface: ``python -m rag --help`` (or ``rag --help`` after ``pip install -e .``)."""
 
+#app.command() is a decorator that defines a command line command and puts the function below it onto the list app() searches
+
 from __future__ import annotations
 
 import json
