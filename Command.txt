@@ -1,0 +1,7 @@
+#To use Claude instead:
+export RAG_LLM_OPENAI_COMPAT_MODEL=claude-sonnet-4.6
+export RAG_VISION_OPENAI_COMPAT_MODEL=claude-sonnet-4.6
+
+#Activate virtual environment:
+.\.venv\Scripts\Activate.ps1
+

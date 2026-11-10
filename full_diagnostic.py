@@ -11,7 +11,7 @@ for i, page in enumerate(reader.pages):
     text = page.extract_text()
     char_count = len(text.strip())
     
-    status = "✅ Good" if char_count > 100 else "⚠️ LOW TEXT"
+    status = "Good" if char_count > 100 else "LOW TEXT"
     print(f"Page {i+1}: {char_count} characters - {status}")
     
     if char_count <= 100:

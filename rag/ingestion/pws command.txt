@@ -1,0 +1,8 @@
+#To turn off Vision Scan:
+$env: RAG_VISION_ENABLED = "false"
+
+#To only ingest sources from Confluence:
+python -m rag ingest --source confluence_api
+
+#To only ingest sources from local document folders uploaded here:
+python -m rag ingest --source local
