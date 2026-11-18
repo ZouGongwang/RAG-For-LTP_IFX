@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BSP assistant</title>
+<title>LTP assistant</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230c4a5e' stroke-width='2'%3E%3Cpath d='M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v6A3.5 3.5 0 0 1 15.5 16H9l-4 3.5V6.5z'/%3E%3C/svg%3E">
 <style>
   :root {
@@ -170,7 +170,7 @@
   #send:hover:not(:disabled) { background: var(--accent-2); }
   #send:disabled { opacity: 0.3; cursor: default; }
   #send svg { width: 1.15rem; height: 1.15rem; }
-  .hint { max-width: 46rem; margin: 0.55rem auto 0; text-align: center; font-size: 0.78rem; color: var(--muted); }
+  .hint { max-width: 60rem; margin: 0.55rem auto 0; text-align: center; font-size: 0.78rem; color: var(--muted); }
 
   /* Before the first question the input sits in the middle of the page. */
   .app.empty { justify-content: center; }
@@ -190,7 +190,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
           <path d="M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v6A3.5 3.5 0 0 1 15.5 16H9l-4 3.5V6.5z"/>
         </svg>
-        BSP assistant
+        LTP assistant
       </div>
       <button id="new-chat" type="button">New chat</button>
     </header>
@@ -212,7 +212,7 @@
           </svg>
         </button>
       </form>
-      <p class="hint">This is LTP-Oriented Chatbot. AI can make mistakes. Always cross reference to the sources or contact our staff directly for anything important.</p>
+      <p class="hint">This is LTP-Oriented Chatbot. AI can make mistakes. <br>Always perform cross reference to the sources or contact our staff directly for important matters.</p>
     </footer>
   </div>
 
