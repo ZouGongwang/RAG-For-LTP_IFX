@@ -205,6 +205,17 @@
       return list;
     }
 
+    // Earlier turns of this chat. The server keeps no sessions, so they last until the page is reloaded.
+    const history = [];
+
+    // Enter sends. Shift+Enter inserts a new line. Enter confirms text while an IME is composing.
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" || event.shiftKey) return;
+      if (event.isComposing || event.keyCode === 229) return;
+      event.preventDefault();
+      if (input.value.trim() && !form.querySelector("button").disabled) form.requestSubmit();
+    });
+
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const question = input.value.trim();
@@ -217,7 +228,7 @@
       let answer = "";
       let body = null;
       try {
-        const payload = { question };
+        const payload = { question, history: history.slice(-12) };
         if (space) payload.space = space;
         const resp = await fetch(api + "/query/stream", {
           method: "POST",
@@ -257,6 +268,7 @@
           }
         }
         if (!answer) throw new Error("empty answer");
+        history.push({ role: "user", content: question }, { role: "assistant", content: answer });
       } catch (err) {
         pending.classList.remove("pending");
         pending.textContent = "Could not get an answer. " + err.message;

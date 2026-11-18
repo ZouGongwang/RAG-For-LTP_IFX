@@ -111,6 +111,8 @@ class PromptConfig(BaseModel):
     template: str = "answer.md"
     max_context_chars: int = 12000
     display_sources: int = 3
+    history_turns: int = 6  # earlier question/answer pairs given to the model (0 turns memory off)
+    history_chars: int = 1500  # each earlier message is cut to this length
 
 
 class OllamaConfig(BaseModel):

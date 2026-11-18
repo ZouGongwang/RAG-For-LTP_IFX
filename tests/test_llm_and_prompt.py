@@ -46,3 +46,40 @@ def test_prompt_builder_numbers_and_budget():
     assert messages[0]["role"] == "system"
     assert "[1] Doc 0\nURL: http://c/0" in messages[1]["content"]
     assert "Question: What?" in messages[1]["content"]
+
+
+def test_history_is_trimmed_and_citations_removed():
+    builder = PromptBuilder(PromptConfig(history_turns=2, history_chars=40))
+    history = [
+        {"role": "user", "content": "old question"},
+        {"role": "assistant", "content": "old answer"},
+        {"role": "user", "content": "What is the target?"},
+        {"role": "assistant", "content": "## Target\n- It is 42 wafers [1][2] .\n- " + "x" * 80},
+        {"role": "user", "content": "And the limit?"},
+        {"role": "assistant", "content": "It is 50 [3, 4]."},
+    ]
+    kept = builder.trim_history(history)
+    assert [m["role"] for m in kept] == ["user", "assistant", "user", "assistant"]
+    assert kept[0]["content"] == "What is the target?"
+    assert "[1]" not in kept[1]["content"] and "42 wafers." in kept[1]["content"]
+    assert len(kept[1]["content"]) <= 40 and kept[1]["content"].endswith("…")
+    assert kept[3]["content"] == "It is 50."
+    assert builder.trim_history(kept) == kept
+    assert PromptBuilder(PromptConfig(history_turns=0)).trim_history(history) == []
+    assert builder.trim_history([{"role": "assistant", "content": "orphan"}]) == []
+
+
+def test_prompt_builder_places_history_between_system_and_question():
+    builder = PromptBuilder(PromptConfig())
+    chunks = [RetrievedChunk("1", "text", {"title": "Doc"})]
+    history = [{"role": "user", "content": "Q1"}, {"role": "assistant", "content": "A1 [1]"}]
+
+    messages, _ = builder.build("Q2", chunks, history)
+    assert [m["role"] for m in messages] == ["system", "user", "assistant", "user"]
+    assert messages[2]["content"] == "A1"
+    assert "Conversation history" in messages[0]["content"]
+    assert "Question: Q2" in messages[3]["content"]
+
+    messages, _ = builder.build("Q2", chunks)
+    assert [m["role"] for m in messages] == ["system", "user"]
+    assert "Conversation history" not in messages[0]["content"]

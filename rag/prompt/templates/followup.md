@@ -1,0 +1,1 @@
+Conversation history: earlier turns of this conversation appear before the latest question. Use them only to understand what the user is referring to. The numbered context passages belong to the latest question only. Passage numbers in earlier answers are no longer valid, so never cite them. Cite only the numbered passages supplied with the latest question.

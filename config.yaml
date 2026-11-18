@@ -63,6 +63,8 @@ prompt:
   template: answer.md
   max_context_chars: 12000
   display_sources: 3
+  history_turns: 6              # earlier question/answer pairs remembered within a chat (0 = no memory)
+  history_chars: 1500
 
 llm:
   provider: openai_compat       # ollama | openai_compat | mcp

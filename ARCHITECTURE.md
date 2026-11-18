@@ -105,7 +105,7 @@ A chunk id is `doc_id::0`, `doc_id::1`, and so on. Metadata includes title, url,
 
 ## Query
 
-`python -m rag ask` and the web chat both call `QueryPipeline` (`rag/pipeline/query_pipeline.py`). The terminal streams tokens. `POST /query` waits for the full answer. `POST /query/stream` streams the same way as the terminal, then sends the sources. The corner chat uses the stream.
+`python -m rag ask` and the web chat both call `QueryPipeline` (`rag/pipeline/query_pipeline.py`). The terminal streams tokens. `POST /query` waits for the full answer. `POST /query/stream` streams the same way as the terminal, then sends the sources. The chat page and the Confluence button both use the stream.
 
 Steps:
 
@@ -139,18 +139,18 @@ Vision uses the same gateway. The request is a chat message with the image as a 
 ```mermaid
 flowchart TB
   Terminal["rag ask"] --> Query
-  Browser["Browser at 127.0.0.1:8000"] --> Widget
-  Wiki["Confluence page"] --> Widget
-  Widget["widget.js"] --> Stream["POST /query/stream"]
+  Browser["Chat page at 127.0.0.1:8000"] --> Stream
+  Wiki["Confluence page"] --> Widget["widget.js"]
+  Widget --> Stream["POST /query/stream"]
   Stream --> Query["QueryPipeline"]
   Query --> Chroma[(Chroma)]
   Query --> Gateway["LiteLLM"]
 ```
 
 - **Terminal.** `rag ask`, `rag ingest`, `rag status`, `rag doctor`, `rag serve`, `rag eval`.
-- **Local page.** `rag serve` serves `rag/api/static/index.html`, which loads `/widget.js`. The button posts to the same machine.
+- **Local page.** `rag serve` serves `rag/api/static/index.html`, a full-page chat in the style of Claude: centred conversation, streamed answers with headings, tables and source chips, and a "New chat" button. Enter sends and Shift+Enter inserts a new line. The page is self-contained and posts to the same machine. It does not use `widget.js`. The server keeps no sessions. The page remembers the chat and sends the earlier question and answer pairs with each new question (`history` in the request body). "New chat" or closing the tab forgets them. For a follow-up, `QueryPipeline` first asks the model to rewrite the question as a standalone search query, so "what about the second one?" still retrieves the right passages. The earlier turns then go to the model between the system prompt and the new question, with their `[n]` citations removed because passage numbers only apply to their own answer. `prompt.history_turns` and `prompt.history_chars` in `config.yaml` set how much is remembered.
 - **HTTP API.** `GET /health`, `POST /query`, `POST /query/stream`, `POST /ingest`, `GET /ingest/status`. Interactive schema at `/docs`.
-- **Confluence button.** The same `widget.js` can be loaded by a script tag in the wiki footer. `data-space` is sent as the query filter. The API allows the origin listed in `api.cors_origins`. The wiki is HTTPS, so this works only when the API itself is served over HTTPS. The laptop address is not that host.
+- **Confluence button.** `widget.js` is a separate corner button that can be loaded by a script tag in the wiki footer. `data-space` is sent as the query filter. The API allows the origin listed in `api.cors_origins`. The wiki is HTTPS, so this works only when the API itself is served over HTTPS. The laptop address is not that host.
 
 `rag eval` runs the questions in `eval/questions.yaml` and reports how often the expected document was retrieved.
 

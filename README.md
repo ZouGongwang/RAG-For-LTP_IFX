@@ -28,7 +28,7 @@ Add `--lite` / `-Lite` to skip Docling, then set `parsing.backend: simple`.
 python -m rag doctor          # checks LiteLLM chat + vision, embeddings, Confluence
 python -m rag ingest          # incremental; --force re-parses, --rebuild starts over
 python -m rag ask             # interactive; or: python -m rag ask "question" --show-context
-python -m rag serve           # http://127.0.0.1:8000  corner chat; /docs for the API
+python -m rag serve           # http://127.0.0.1:8000  chat page; /docs for the API
 python -m rag eval            # golden questions in eval/questions.yaml
 ```
 
@@ -44,7 +44,7 @@ Try `page_limit: 20` first. Export (offline): unzip a space HTML export into
 
 ## Chat button on Confluence pages
 
-The same corner button can be loaded by the wiki. A Confluence admin pastes this into
+`widget.js` is a separate corner chat button that the wiki can load. A Confluence admin pastes this into
 **General configuration → Custom HTML → At end of the BODY**, replacing the host with the
 HTTPS address of this API (`api.cors_origins` must include the wiki origin):
 

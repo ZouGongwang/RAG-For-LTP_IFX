@@ -6,7 +6,7 @@ import json
 import threading
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -48,11 +48,21 @@ def components() -> Components:
     return Components(get_settings())
 
 
+class ChatTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(max_length=20000)
+
+
 class QueryRequest(BaseModel):
     question: str = Field(min_length=1)
     space: str | None = None
     source: str | None = None
     top_k: int | None = Field(default=None, ge=1, le=50)
+    # The server keeps no sessions. The page sends the earlier turns of the chat with each question.
+    history: list[ChatTurn] = Field(default_factory=list, max_length=50)
+
+    def prior_turns(self) -> list[dict[str, str]]:
+        return [turn.model_dump() for turn in self.history]
 
 
 class SourceOut(BaseModel):
@@ -126,7 +136,9 @@ def health() -> dict[str, Any]:
 def query(req: QueryRequest) -> QueryResponse:
     filters = {"space": req.space, "source": req.source}
     try:
-        result = QueryPipeline(components()).ask(req.question, filters=filters, top_k=req.top_k)
+        result = QueryPipeline(components()).ask(
+            req.question, filters=filters, top_k=req.top_k, history=req.prior_turns()
+        )
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"{type(exc).__name__}: {exc}") from exc
     return QueryResponse(
@@ -144,7 +156,9 @@ def query_stream(req: QueryRequest) -> StreamingResponse:
 
     def events():
         try:
-            stream, used = pipeline.ask_stream(req.question, filters=filters, top_k=req.top_k)
+            stream, used = pipeline.ask_stream(
+                req.question, filters=filters, top_k=req.top_k, history=req.prior_turns()
+            )
             parts: list[str] = []
             for piece in stream:
                 parts.append(piece)
