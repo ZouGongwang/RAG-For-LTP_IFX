@@ -22,7 +22,7 @@ from rag.parsing.figures import ImageDescriber
 
 log = logging.getLogger(__name__)
 
-_ATTACHMENT_SUFFIXES = {".pdf", ".pptx", ".docx", ".xlsx", ".md", ".txt"}
+_ATTACHMENT_SUFFIXES = {".pdf", ".pptx", ".docx", ".xlsx", ".xlsm", ".xls", ".csv", ".tsv", ".md", ".txt"}
 
 
 class ConfluenceAPISource:

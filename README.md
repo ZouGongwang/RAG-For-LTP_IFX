@@ -5,7 +5,7 @@ Ask questions over department Confluence spaces, PDFs, slides and images, with c
 ```
 rag/
   ingestion/   sources: local folder, Confluence REST API (Cloud + Data Center), Confluence export
-  parsing/     Docling (PDF/PPTX/DOCX/XLSX/images), Confluence HTML -> Markdown, image captions
+  parsing/     Docling (PDF/PPTX/DOCX/images), spreadsheets (XLSX/XLSM/XLS/CSV/TSV), Confluence HTML -> Markdown, image captions
   chunking/    heading-aware Markdown chunker (tables kept whole, breadcrumbs, overlap)
   embedding/   sentence-transformers (BAAI/bge-small-en-v1.5)
   vectorstore/ Chroma (upsert/delete per document)

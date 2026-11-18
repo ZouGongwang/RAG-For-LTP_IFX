@@ -27,7 +27,7 @@ log = logging.getLogger(__name__)
 
 _PAGE_ID_RE = re.compile(r"(?:_|^)(\d{3,})\.html$")
 _MD_IMAGE_RE = re.compile(r"!\[([^\]]*)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
-_ATTACHMENT_SUFFIXES = {".pdf", ".pptx", ".docx", ".xlsx", ".txt"}
+_ATTACHMENT_SUFFIXES = {".pdf", ".pptx", ".docx", ".xlsx", ".xlsm", ".xls", ".csv", ".tsv", ".txt"}
 
 
 class ConfluenceExportSource:

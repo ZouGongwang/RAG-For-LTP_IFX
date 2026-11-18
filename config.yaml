@@ -35,6 +35,7 @@ parsing:
   min_image_px: 120             # ignore icons/logos smaller than this
   image_scale: 2.0
   docling_artifacts_path: null  # folder with pre-downloaded Docling models (offline use)
+  max_sheet_rows: 20000         # Excel/CSV: rows read per sheet; the rest is ignored
 
 chunking:
   max_tokens: 400

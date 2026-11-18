@@ -9,14 +9,15 @@ from rag.config import ParsingConfig
 from rag.models import ParsedDocument, Segment
 from rag.parsing.confluence_html import export_html_to_markdown
 from rag.parsing.figures import ImageDescriber
+from rag.parsing.spreadsheet import SPREADSHEET_SUFFIXES, SpreadsheetParser
 
 log = logging.getLogger(__name__)
 
 TEXT_SUFFIXES = {".md", ".markdown", ".txt"}
 HTML_SUFFIXES = {".html", ".htm"}
 IMAGE_SUFFIXES_ALL = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".tif", ".tiff"}
-BINARY_SUFFIXES = {".pdf", ".pptx", ".docx", ".xlsx"} | IMAGE_SUFFIXES_ALL
-SUPPORTED_SUFFIXES = TEXT_SUFFIXES | HTML_SUFFIXES | BINARY_SUFFIXES
+BINARY_SUFFIXES = {".pdf", ".pptx", ".docx"} | IMAGE_SUFFIXES_ALL
+SUPPORTED_SUFFIXES = TEXT_SUFFIXES | HTML_SUFFIXES | BINARY_SUFFIXES | SPREADSHEET_SUFFIXES
 
 
 class Parsers:
@@ -53,7 +54,6 @@ class Parsers:
         if suffix in HTML_SUFFIXES:
             _title, md, _crumbs = export_html_to_markdown(path.read_text(encoding="utf-8", errors="replace"))
             return ParsedDocument([Segment(md)])
-        if suffix == ".xlsx" and self.cfg.backend != "docling":
-            log.warning("Skipping %s: .xlsx needs the docling backend", path.name)
-            return ParsedDocument([])
+        if suffix in SPREADSHEET_SUFFIXES:
+            return SpreadsheetParser(self.cfg).parse(path, title=title)
         return self._binary_parser().parse(path, title=title)

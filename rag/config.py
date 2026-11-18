@@ -75,6 +75,7 @@ class ParsingConfig(BaseModel):
     min_image_px: int = 120
     image_scale: float = 2.0
     docling_artifacts_path: Path | None = None
+    max_sheet_rows: int = 20000  # spreadsheets: rows read per sheet; the rest is ignored
 
 
 class ChunkingConfig(BaseModel):

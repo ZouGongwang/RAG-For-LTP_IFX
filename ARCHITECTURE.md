@@ -73,7 +73,7 @@ The CLI name `confluence_api` is only how you select the source. Chunks are tagg
 
 Confluence Data Center uses a personal access token against `/rest/api`. Confluence Cloud uses email plus API token against `/api/v2`. Both are in `rag/ingestion/confluence_client.py` and return the same page and attachment objects.
 
-A Confluence page becomes one document (`confluence:<page id>`). PDF, PowerPoint, Word, Excel, markdown, and text attachments become extra documents. Images on the page are not separate documents. They are downloaded, captioned, and inserted into the page markdown where the image was.
+A Confluence page becomes one document (`confluence:<page id>`). PDF, PowerPoint, Word, Excel, CSV, markdown, and text attachments become extra documents. Images on the page are not separate documents. They are downloaded, captioned, and inserted into the page markdown where the image was.
 
 `page_limit: 50` stops after 50 pages per space. Deletions are only applied when the listing is complete (`page_limit` unset). With a limit, pages removed in Confluence stay in the index.
 
@@ -83,7 +83,8 @@ A Confluence page becomes one document (`confluence:<page id>`). PDF, PowerPoint
 
 - `.md` and `.txt` are read as text.
 - `.html` goes through `confluence_html.py`, which turns Confluence storage or export HTML into markdown.
-- `.pdf`, `.pptx`, `.docx`, `.xlsx`, and images go to Docling when `parsing.backend` is `docling`. If Docling is not installed, the simple parser is used. Excel needs Docling.
+- `.pdf`, `.pptx`, `.docx`, and images go to Docling when `parsing.backend` is `docling`. If Docling is not installed, the simple parser is used.
+- `.xlsx`, `.xlsm`, `.xls`, `.csv`, and `.tsv` go to `spreadsheet.py`, which does not need Docling. Each visible sheet becomes a `## Sheet name` section, so the sheet name appears in the indexed text and in citations. Rows separated by two or more empty rows become separate tables, and a one-cell title row above a table is kept as a caption. Dates and numbers are written plainly (`41.0` becomes `41`). Only stored values are read, so formulas are not recalculated and macros are ignored. Hidden sheets are skipped. `parsing.max_sheet_rows` (default 20000) caps the rows read per sheet. CSV delimiter and encoding are detected.
 
 Docling (`rag/parsing/docling_parser.py`) reads layout, tables, and optional OCR. It then asks `ImageDescriber` to caption figures, and to caption PDF pages that have very little text. Captions are cached in SQLite by image hash and model name, so an unchanged image is not sent to the gateway again.
 

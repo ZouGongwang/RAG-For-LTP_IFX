@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any, Callable, Literal
 
 SegmentKind = Literal["text", "table", "image_caption", "page_caption"]
+_SPREADSHEET_TYPES = {"xlsx", "xlsm", "xls", "csv", "tsv"}
 
 
 @dataclass
@@ -63,7 +64,7 @@ class RetrievedChunk:
         parts = [title]
         if section and section != title:
             parts.append(f"> {section}")
-        if page:
+        if page and self.metadata.get("file_type") not in _SPREADSHEET_TYPES:  # the section is the sheet name
             parts.append(f"({unit} {page})")
         return " ".join(parts)
 

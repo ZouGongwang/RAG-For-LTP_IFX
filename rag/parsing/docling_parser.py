@@ -1,4 +1,4 @@
-"""Layout-aware parsing of PDF, PPTX, DOCX, XLSX and images with Docling (runs locally)."""
+"""Layout-aware parsing of PDF, PPTX, DOCX and images with Docling (runs locally)."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from rag.parsing.figures import ImageDescriber
 
 log = logging.getLogger(__name__)
 
-DOCLING_SUFFIXES = {".pdf", ".pptx", ".docx", ".xlsx", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}
+DOCLING_SUFFIXES = {".pdf", ".pptx", ".docx", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp", ".gif", ".webp"}
 
 
